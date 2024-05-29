@@ -1,25 +1,33 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { createContext, useState } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import AddressList from './AddressList';
+import EditAddressForm from './EditAddressForm';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+export const AddressContext = createContext();
+
+const App = () => {
+	const [addresses, setAddresses] = useState([]);
+
+	const addAddress = (newAddress) => {
+		setAddresses([...addresses, newAddress]);
+	};
+
+	const updateAddress = (index, updatedAddress) => {
+		const newAddresses = [...addresses];
+		newAddresses[index] = updatedAddress;
+		setAddresses(newAddresses);
+	};
+
+	return (
+		<AddressContext.Provider value={{ addresses, addAddress, updateAddress }}>
+			<Router>
+				<Routes>
+					<Route path="/" element={<AddressList />} />
+					<Route path="/edit/:index" element={<EditAddressForm />} />
+				</Routes>
+			</Router>
+		</AddressContext.Provider>
+	);
+};
 
 export default App;
